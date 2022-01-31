@@ -12,4 +12,5 @@ export interface IAction {
   id: number;
   text: string;
   status: string;
+  isAllChecked: boolean;
 }

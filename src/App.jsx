@@ -20,6 +20,14 @@ function App() {
       id,
     });
   };
+  const handleRemove = (id) => {
+    const didRemove = window.confirm("Are you sure you want to remove this task?");
+    didRemove &&
+      dispatch({
+        type: "HANDLE_REMOVE",
+        id,
+      });
+  };
 
   return (
     <div className="App">
@@ -43,6 +51,7 @@ function App() {
               status={elem.completed}
               text={elem.text}
               handleCompleted={handleCompleted}
+              handleRemove={handleRemove}
             />
           ))}
         </List>

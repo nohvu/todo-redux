@@ -17,5 +17,10 @@ export const reducer = (state: IState[], action: IAction) => {
     });
     return [...state];
   }
+
+  if (action.type === "HANDLE_REMOVE") {
+    return state.filter((elem) => elem.id !== action.id);
+  }
+
   return state;
 };

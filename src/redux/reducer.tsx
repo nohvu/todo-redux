@@ -22,5 +22,20 @@ export const reducer = (state: IState[], action: IAction) => {
     return state.filter((elem) => elem.id !== action.id);
   }
 
+  if (action.type === "CHECKED_ALL") {
+    state.map((elem) => {
+      if (action.isAllChecked) {
+        elem.completed = true;
+      } else {
+        elem.completed = false;
+      }
+    });
+    return [...state];
+  }
+
+  if (action.type === "REMOVE_ALL") {
+    return state.filter((elem) => elem.completed === false);
+  }
+
   return state;
 };

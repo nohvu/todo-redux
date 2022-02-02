@@ -6,7 +6,8 @@ import { reducer } from "./redux/reducer";
 
 function App() {
   const [state, dispatch] = React.useReducer(reducer, []);
-
+  const [isAllChecked, setIsAllChecked] = React.useState(true);
+  const [typeTask, setTypeTask] = React.useState(0);
   const addTask = (text, status) => {
     dispatch({
       type: "ADD_TASK",
@@ -28,6 +29,15 @@ function App() {
         id,
       });
   };
+  const checkedAll = () => {
+    setIsAllChecked((prev) => !prev);
+    dispatch({ type: "CHECKED_ALL", isAllChecked });
+  };
+  const removeAll = () => {
+    if (window.confirm("Are you sure you want to remove all tasks?")) {
+      dispatch({ type: "REMOVE_ALL" });
+    }
+  };
 
   return (
     <div className="App">
@@ -37,28 +47,59 @@ function App() {
         </Paper>
         <AddField addTask={addTask} />
         <Divider />
-        <Tabs value={0}>
-          <Tab label="Все" />
-          <Tab label="Активные" />
-          <Tab label="Завершённые" />
+        <Tabs value={typeTask}>
+          <Tab onClick={() => setTypeTask(0)} label="Все" />
+          <Tab onClick={() => setTypeTask(1)} label="Активные" />
+          <Tab onClick={() => setTypeTask(2)} label="Завершённые" />
         </Tabs>
         <Divider />
         <List>
-          {state.map((elem) => (
-            <Item
-              key={elem.id}
-              id={elem.id}
-              status={elem.completed}
-              text={elem.text}
-              handleCompleted={handleCompleted}
-              handleRemove={handleRemove}
-            />
-          ))}
+          {typeTask === 0 &&
+            state.map((elem) => (
+              <Item
+                key={elem.id}
+                id={elem.id}
+                status={elem.completed}
+                text={elem.text}
+                handleCompleted={handleCompleted}
+                handleRemove={handleRemove}
+              />
+            ))}
+          {typeTask === 1 &&
+            state.map(
+              (elem) =>
+                !elem.completed && (
+                  <Item
+                    key={elem.id}
+                    id={elem.id}
+                    status={elem.completed}
+                    text={elem.text}
+                    handleCompleted={handleCompleted}
+                    handleRemove={handleRemove}
+                  />
+                ),
+            )}
+          {typeTask === 2 &&
+            state.map(
+              (elem) =>
+                elem.completed && (
+                  <Item
+                    key={elem.id}
+                    id={elem.id}
+                    status={elem.completed}
+                    text={elem.text}
+                    handleCompleted={handleCompleted}
+                    handleRemove={handleRemove}
+                  />
+                ),
+            )}
         </List>
         <Divider />
         <div className="check-buttons">
-          <Button>Отметить всё</Button>
-          <Button>Очистить</Button>
+          <Button onClick={checkedAll}>
+            {!isAllChecked && state.length !== 0 ? "Снять отметки" : "Отметить всё"}
+          </Button>
+          <Button onClick={removeAll}>{!isAllChecked ? "Очистить все" : "Очистить"}</Button>
         </div>
       </Paper>
     </div>
